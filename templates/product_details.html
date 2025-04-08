@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="card product-card">
+                    <div class="row g-0">
+                        <div class="col-lg-5">
+                            <div class="product-image-wrapper">
+                                {% if cassette.image_path %}
+                                    <img src="{{ url_for('static', filename=cassette.image_path) }}" 
+                                         alt="{{ cassette.title }}" 
+                                         class="product-image">
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="product-header">
+                                <h1 class="product-title">{{ cassette.title }}</h1>
+                                <div class="product-tag">{{ cassette.genre }}</div>
+                            </div>
+                            
+                            <div class="product-price">{{ "%.2f"|format(cassette.price) }} $</div>
+                            
+                            <div class="product-meta">
+                                <div class="meta-item">
+                                    <span class="meta-label">Год выпуска:</span>
+                                    <span class="meta-value">{{ cassette.release_year }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Статус:</span>
+                                    <span class="meta-value {% if cassette.available %}text-success{% else %}text-danger{% endif %}">
+                                        {% if cassette.available %}В наличии{% else %}Нет в наличии{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {% if cassette.description %}
+                            <div class="product-description">
+                                <h3>Описание</h3>
+                                <p>{{ cassette.description }}</p>
+                            </div>
+                            {% endif %}
+
+                            <div class="product-actions">
+                                {% if cassette.available %}
+                                    <a href="#" class="btn btn-primary">Арендовать</a>
+                                {% else %}
+                                    <button class="btn btn-secondary" disabled>Временно недоступно</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

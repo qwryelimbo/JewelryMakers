@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section-padding">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1 class="hero-title mb-4">About <br>
+                    <span class="hero-accent">RandomPlay</span></h1>
+                <p class="hero-subtitle">
+                    Сохраняем магию аналогового развлечения через тщательно подобранные коллекции VHS и страсть к ностальгии.
+                </p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row g-4">
+            <!-- Our Story -->
+            <div class="col-md-6">
+                <div class="glass p-4 h-100">
+                    <h2 class="h3 mb-4">Наша история</h2>
+                    <p class="text-muted mb-0">
+                        RandomPlay был основан с любовью к сохранению ностальгии физических носителей. В эпоху цифрового стриминга мы верим, что есть что-то особенное в том, чтобы держать VHS-кассету в руках, вставлять её в видеомагнитофон и смотреть фильмы так, как они были задуманы.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Our Mission -->
+            <div class="col-md-6">
+                <div class="glass p-4 h-100">
+                    <h2 class="h3 mb-4">Наша миссия</h2>
+                    <p class="text-muted mb-0">
+                        Мы стремимся сохранить опыт проката VHS-кассет и познакомить новое поколение с классическими фильмами. Наша тщательно подобранная коллекция включает всё: от блокбастеров до редких культовых фильмов, все в оригинальном VHS-формате.
+                    </p>
+                </div>
+            </div>
+
+            <!-- What We Offer -->
+            <div class="col-md-12">
+                <div class="glass p-4">
+                    <h2 class="h3 mb-4">Что мы предлагаем</h2>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="feature-item text-center mb-4">
+                                <div class="feature-icon mb-3">📼</div>
+                                <h3 class="h5 mb-3">Обширная коллекция</h3>
+                                <p class="text-muted mb-0">Подобранная коллекция VHS-кассет разных жанров и эпох</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item text-center mb-4">
+                                <div class="feature-icon mb-3">💎</div>
+                                <h3 class="h5 mb-3">Редкие находки</h3>
+                                <p class="text-muted mb-0">Труднодоступные и снятые с производства релизы</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-item text-center mb-4">
+                                <div class="feature-icon mb-3">🎬</div>
+                                <h3 class="h5 mb-3">Оригинальная упаковка</h3>
+                                <p class="text-muted mb-0">Аутентичные обложки и упаковка в отличном состоянии</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="col-md-12">
+                <div class="glass p-4">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <h2 class="h3 mb-4">Связаться с нами</h2>
+                            <p class="text-muted mb-4">Есть вопросы о нашей коллекции или процессе аренды? Мы будем рады вам помочь!</p>
+                            <div class="contact-info">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="contact-icon me-3">📧</div>
+                                    <div>
+                                        <div class="text-muted">Email</div>
+                                        <a href="mailto:info@randomplay.com" class="link-accent">info@randomplay.com</a>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="contact-icon me-3">📞</div>
+                                    <div>
+                                        <div class="text-muted">Телефон</div>
+                                        <a href="tel:+15551234567" class="link-accent">+7 (555) 123-45-67</a>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="contact-icon me-3">📍</div>
+                                    <div>
+                                        <div class="text-muted">Адрес</div>
+                                        <div>ул. VHS, д. 123, Город Ностальгия, 12345</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 mt-4 mt-lg-0 text-center">
+                            <a href="{{ url_for('catalog') }}" class="btn btn-primary btn-lg">
+                                Browse Our Collection
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

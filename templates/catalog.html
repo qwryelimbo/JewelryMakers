@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section-padding">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="filter-panel glass">
+                    <h2 class="h4 mb-4">Фильтры</h2>
+                    <form method="get" action="{{ url_for('catalog') }}" id="filterForm">
+                        <div class="filter-group mb-3">
+                            <label class="form-label">Жанр</label>
+                            <select name="genre" class="form-select glass-input">
+                                <option value="">Все жанры</option>
+                                {% for genre in genres %}
+                                <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>
+                                    {{ genre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="filter-group mb-3">
+                            <label class="form-label">Диапазон цен</label>
+                            <div class="price-range d-flex gap-2">
+                                <input type="number" name="min_price" class="form-control glass-input" placeholder="Мин" 
+                                       value="{{ request.args.get('min_price', '') }}" step="0.01" min="0">
+                                <input type="number" name="max_price" class="form-control glass-input" placeholder="Макс" 
+                                       value="{{ request.args.get('max_price', '') }}" step="0.01" min="0">
+                            </div>
+                        </div>
+
+                        <div class="filter-group mb-3">
+                            <label class="form-label">Год выпуска</label>
+                            <div class="year-range d-flex gap-2">
+                                <input type="number" name="min_year" class="form-control glass-input" placeholder="Мин" 
+                                       value="{{ request.args.get('min_year', '') }}" min="1900" max="2024">
+                                <input type="number" name="max_year" class="form-control glass-input" placeholder="Макс" 
+                                       value="{{ request.args.get('max_year', '') }}" min="1900" max="2024">
+                            </div>
+                        </div>
+
+                        <div class="filter-group mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="available_only" id="availableOnly"
+                                       {% if request.args.get('available_only') %}checked{% endif %}>
+                                <label class="form-check-label" for="availableOnly">
+                                    Только в наличии
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1">Применить</button>
+                            <button type="button" class="btn btn-outline" onclick="resetFilters()">Сбросить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="row">
+                    {% for cassette in cassettes %}
+                    <div class="col-12 mb-4">
+                        <div class="glass">
+                            <div class="row g-0">
+                                <div class="col-md-3">
+                                    <div class="card-img-wrapper h-100">
+                                        <img src="{{ url_for('static', filename=cassette.image_path) }}" 
+                                             alt="{{ cassette.title }}" 
+                                             class="card-img h-100 object-fit-cover">
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-content p-3">
+                                        <h3 class="card-title h4 mb-2">{{ cassette.title }}</h3>
+                                        <div class="card-meta text-muted mb-2">{{ cassette.genre }} • {{ cassette.release_year }}</div>
+                                        <div class="card-price mb-3">{{ "%.2f"|format(cassette.price) }} $</div>
+                                        <div class="card-description mb-3">
+                                            {{ cassette.description[:150] }}{% if cassette.description|length > 150 %}...{% endif %}
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            {% if cassette.available %}
+                                                <span class="badge badge-available">В наличии</span>
+                                            {% else %}
+                                                <span class="badge badge-unavailable">Нет в наличии</span>
+                                            {% endif %}
+                                            <a href="{{ url_for('product_details', id=cassette.id) }}" class="btn-details">Подробнее →</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="text-center text-muted">
+                            <p>Кассеты не найдены</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function resetFilters() {
+    const form = document.getElementById('filterForm');
+    const inputs = form.querySelectorAll('input:not([type="submit"]), select');
+    inputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            input.checked = false;
+        } else {
+            input.value = '';
+        }
+    });
+    form.submit();
+}
+</script>
+{% endblock %} 

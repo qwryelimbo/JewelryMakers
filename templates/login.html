@@ -28,4 +28,57 @@
         </div>
     </div>
 </div>
+
+<style>
+    .card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        min-height: auto;
+    }
+    
+    .form-label {
+        color: #fff;
+        font-weight: 500;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .glass-input {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #fff;
+        padding: 12px;
+        font-size: 1.1rem;
+        height: auto;
+    }
+    
+    .glass-input:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: #fff;
+        box-shadow: none;
+    }
+    
+    .glass-input::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .form-text {
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #0056b3, #003d80);
+    }
+</style>
 {% endblock %} 

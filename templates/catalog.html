@@ -1,122 +1,281 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="section-padding">
-    <div class="container">
-        <div class="row mb-5">
-            <div class="col-md-4">
-                <div class="filter-panel glass">
-                    <h2 class="h4 mb-4">Фильтры</h2>
-                    <form method="get" action="{{ url_for('catalog') }}" id="filterForm">
-                        <div class="filter-group mb-3">
-                            <label class="form-label">Жанр</label>
-                            <select name="genre" class="form-select glass-input">
-                                <option value="">Все жанры</option>
-                                {% for genre in genres %}
-                                <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>
-                                    {{ genre }}
-                                </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Фильтры -->
+        <div class="col-md-3">
+            <div class="filter-card p-4 mb-4">
+                <h4 class="mb-4">Фильтры</h4>
+                
+                {% if current_user.is_authenticated and current_user.role in ['admin', 'master'] %}
+                <!-- <div class="mb-4">
+                    <a href="{{ url_for('admin_jewelry_add') }}" class="btn btn-primary w-100 mb-4">
+                        <i class="fas fa-plus me-2"></i>Разместить новое изделие
+                    </a>
+                </div> -->
+                {% endif %}
 
-                        <div class="filter-group mb-3">
-                            <label class="form-label">Диапазон цен</label>
-                            <div class="price-range d-flex gap-2">
-                                <input type="number" name="min_price" class="form-control glass-input" placeholder="Мин" 
-                                       value="{{ request.args.get('min_price', '') }}" step="0.01" min="0">
-                                <input type="number" name="max_price" class="form-control glass-input" placeholder="Макс" 
-                                       value="{{ request.args.get('max_price', '') }}" step="0.01" min="0">
-                            </div>
-                        </div>
+                <form method="GET" class="filter-form">
+                    <div class="mb-4">
+                        <label for="category" class="form-label">Категория</label>
+                        <select class="form-select glass-input" id="category" name="category">
+                            <option value="">Все категории</option>
+                            {% for category in categories %}
+                            <option value="{{ category }}" {% if request.args.get('category') == category %}selected{% endif %}>
+                                {{ category }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                        <div class="filter-group mb-3">
-                            <label class="form-label">Год выпуска</label>
-                            <div class="year-range d-flex gap-2">
-                                <input type="number" name="min_year" class="form-control glass-input" placeholder="Мин" 
-                                       value="{{ request.args.get('min_year', '') }}" min="1900" max="2024">
-                                <input type="number" name="max_year" class="form-control glass-input" placeholder="Макс" 
-                                       value="{{ request.args.get('max_year', '') }}" min="1900" max="2024">
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <label for="material" class="form-label">Материал</label>
+                        <select class="form-select glass-input" id="material" name="material">
+                            <option value="">Все материалы</option>
+                            {% for material in materials %}
+                            <option value="{{ material.id }}" {% if request.args.get('material')|int == material.id %}selected{% endif %}>
+                                {{ material.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                        <div class="filter-group mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="available_only" id="availableOnly"
-                                       {% if request.args.get('available_only') %}checked{% endif %}>
-                                <label class="form-check-label" for="availableOnly">
-                                    Только в наличии
-                                </label>
-                            </div>
-                        </div>
+                    <div class="mb-4">
+                        <label for="price_min" class="form-label">Цена от</label>
+                        <input type="number" class="form-control glass-input" id="price_min" name="price_min" 
+                               value="{{ request.args.get('price_min', '') }}" placeholder="₽">
+                    </div>
 
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary flex-grow-1">Применить</button>
-                            <button type="button" class="btn btn-outline" onclick="resetFilters()">Сбросить</button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="mb-4">
+                        <label for="price_max" class="form-label">Цена до</label>
+                        <input type="number" class="form-control glass-input" id="price_max" name="price_max" 
+                               value="{{ request.args.get('price_max', '') }}" placeholder="₽">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Применить фильтры</button>
+                </form>
             </div>
-            
-            <div class="col-md-8">
-                <div class="row">
-                    {% for cassette in cassettes %}
-                    <div class="col-12 mb-4">
-                        <div class="glass">
-                            <div class="row g-0">
-                                <div class="col-md-3">
-                                    <div class="card-img-wrapper h-100">
-                                        <img src="{{ url_for('static', filename=cassette.image_path) }}" 
-                                             alt="{{ cassette.title }}" 
-                                             class="card-img h-100 object-fit-cover">
+        </div>
+
+        <!-- Каталог -->
+        <div class="col-md-9">
+            <div class="row">
+                {% for jewelry in jewelry_items %}
+                <div class="col-md-4 mb-4">
+                    <div class="glass-card h-100">
+                        <div class="card-body d-flex flex-column">
+                            <div class="text-center mb-3">
+                                <img src="{{ url_for('static', filename=jewelry.image_path) }}" 
+                                     class="img-fluid rounded" 
+                                     alt="{{ jewelry.name }}"
+                                     style="max-height: 300px; width: auto; object-fit: contain;">
+                            </div>
+                                
+                            <h5 class="card-title mb-3">{{ jewelry.name }}</h5>
+                            
+                            <div class="mb-3">
+                                <p class="mb-1"><strong>Материал:</strong> {{ jewelry.material.name }}</p>
+                                <p class="mb-1"><strong>Категория:</strong> {{ jewelry.category }}</p>
+                                {% if jewelry.stone_type %}
+                                <p class="mb-1"><strong>Камень:</strong> {{ jewelry.stone_type }}</p>
+                                {% endif %}
+                                {% if jewelry.stone_carat %}
+                                <p class="mb-1"><strong>Вес камня:</strong> {{ jewelry.stone_carat }} карат</p>
+                                {% endif %}
+                                <p class="mb-1"><strong>Вес:</strong> {{ jewelry.weight }} г</p>
+                            </div>
+
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        {% if current_user.is_authenticated and current_user.role == 'regular_client' %}
+                                        <p class="mb-0">
+                                            <span class="text-decoration-line-through text-muted me-2">{{ "%.2f"|format(jewelry.price) }} ₽</span>
+                                            <span class="text-danger">{{ "%.2f"|format(jewelry.price * 0.9) }} ₽</span>
+                                        </p>
+                                        <small class="text-success">Скидка 10% для постоянных клиентов</small>
+                                        {% else %}
+                                        <p class="mb-0">{{ "%.2f"|format(jewelry.price) }} ₽</p>
+                                        {% endif %}
                                     </div>
+                                    <span class="badge bg-{{ 'success' if jewelry.available else 'danger' }}">
+                                        {{ 'В наличии' if jewelry.available else 'Нет в наличии' }}
+                                    </span>
                                 </div>
-                                <div class="col-md-9">
-                                    <div class="card-content p-3">
-                                        <h3 class="card-title h4 mb-2">{{ cassette.title }}</h3>
-                                        <div class="card-meta text-muted mb-2">{{ cassette.genre }} • {{ cassette.release_year }}</div>
-                                        <div class="card-price mb-3">{{ "%.2f"|format(cassette.price) }} $</div>
-                                        <div class="card-description mb-3">
-                                            {{ cassette.description[:150] }}{% if cassette.description|length > 150 %}...{% endif %}
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            {% if cassette.available %}
-                                                <span class="badge badge-available">В наличии</span>
-                                            {% else %}
-                                                <span class="badge badge-unavailable">Нет в наличии</span>
-                                            {% endif %}
-                                            <a href="{{ url_for('product_details', id=cassette.id) }}" class="btn-details">Подробнее →</a>
-                                        </div>
-                                    </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#jewelryModal{{ jewelry.id }}">
+                                        Подробнее
+                                    </button>
+                                    
+                                    <!-- {% if current_user.is_authenticated and current_user.role in ['admin', 'master'] %}
+                                    <a href="{{ url_for('admin_jewelry_edit', id=jewelry.id) }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-edit me-2"></i>Редактировать
+                                    </a>
+                                    {% endif %} -->
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {% else %}
-                    <div class="col-12">
-                        <div class="text-center text-muted">
-                            <p>Кассеты не найдены</p>
-                        </div>
-                    </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </div>
 
-<script>
-function resetFilters() {
-    const form = document.getElementById('filterForm');
-    const inputs = form.querySelectorAll('input:not([type="submit"]), select');
-    inputs.forEach(input => {
-        if (input.type === 'checkbox') {
-            input.checked = false;
-        } else {
-            input.value = '';
-        }
-    });
-    form.submit();
+<!-- Модальные окна для каждого украшения -->
+{% for item in jewelry_items %}
+<div class="modal fade" id="jewelryModal{{ item.id }}" tabindex="-1" aria-labelledby="jewelryModalLabel{{ item.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h5 class="modal-title" id="jewelryModalLabel{{ item.id }}">{{ item.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="{{ url_for('static', filename=item.image_path) }}" class="img-fluid rounded" alt="{{ item.name }}">
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Описание:</h6>
+                        <p>{{ item.description }}</p>
+                        <h6>Характеристики:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Категория:</strong> {{ item.category }}</li>
+                            <li><strong>Материал:</strong> {{ item.material.name }}</li>
+                            <li><strong>Вес:</strong> {{ "%.1f"|format(item.weight) }} г</li>
+                            <li><strong>Цена:</strong> {{ "%.2f"|format(item.price) }} ₽</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                {% if current_user.is_authenticated %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createOrderModal{{ item.id }}">
+                    Создать заказ
+                </button>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-primary">Войти для заказа</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно создания заказа -->
+<div class="modal fade" id="createOrderModal{{ item.id }}" tabindex="-1" aria-labelledby="createOrderModalLabel{{ item.id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content glass">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createOrderModalLabel{{ item.id }}">Создание заказа</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('create_order', jewelry_id=item.id) }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="size" class="form-label">Размер</label>
+                        <input type="text" class="form-control" id="size" name="size" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="delivery_address" class="form-label">Адрес доставки</label>
+                        <input type="text" class="form-control" id="delivery_address" name="delivery_address" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="additional_notes" class="form-label">Дополнительные пожелания</label>
+                        <textarea class="form-control" id="additional_notes" name="additional_notes" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Подтвердить заказ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<style>
+/* Стили для фильтра */
+.filter-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
 }
-</script>
+
+.filter-form {
+    min-height: 400px;
+}
+
+/* Стили для карточек товаров */
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+    box-shadow: none;
+}
+
+.card-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-body > div:not(:last-child) {
+    margin-bottom: 1rem;
+}
+
+.card-body .mt-auto {
+    margin-top: auto;
+    padding-top: 1rem;
+}
+
+.d-grid {
+    place-items: bottom;
+}
+
+/* Стили для изображения */
+.text-center.mb-3 {
+    flex-shrink: 0;
+}
+
+/* Стили для описания */
+.mb-3:not(.text-center) {
+    flex-grow: 1;
+}
+
+/* Стили для цены и кнопки */
+.mt-auto {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+}
+</style>
 {% endblock %} 

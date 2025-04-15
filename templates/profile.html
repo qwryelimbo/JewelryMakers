@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Профиль пользователя -->
+        <div class="col-md-4">
+            <div class="card glass-card mb-4" style="min-height: 500px;">
+                <div class="card-body text-center d-flex flex-column align-items-center justify-content-center">
+                    <img src="{{ url_for('static', filename=current_user.avatar) }}" 
+                         class="rounded-circle mb-4" 
+                         alt="Аватар" 
+                         style="width: 200px; height: 200px; object-fit: cover;">
+                    <h3 class="card-title mb-4">{{ current_user.username }}</h3>
+                    <p class="mb-3">
+                        <span class="badge bg-{{ 
+                            'success' if current_user.role == 'admin' 
+                            else 'info' if current_user.role == 'master' 
+                            else 'primary' if current_user.role == 'regular_client' 
+                            else 'secondary' 
+                        }}">
+                            {{ 
+                                'Администратор' if current_user.role == 'admin'
+                                else 'Мастер' if current_user.role == 'master'
+                                else 'Постоянный клиент' if current_user.role == 'regular_client'
+                                else 'Клиент'
+                            }}
+                        </span>
+                    </p>
+                    <a href="{{ url_for('edit_profile') }}" class="btn btn-primary btn-lg mb-4">
+                        Редактировать профиль
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Личная информация -->
+        <div class="col-md-8">
+            <div class="glass-card p-4 mb-4" style="min-height: 500px;">
+                <h3 class="mb-4">Личная информация</h3>
+                
+                <div class="mb-5">
+                    <h5 class="mb-3">Основная информация</h5>
+                    <p class="mb-3"><strong>Email:</strong> {{ current_user.email }}</p>
+                    <p class="mb-3"><strong>Дата регистрации:</strong> {{ current_user.date_joined.strftime('%d.%m.%Y') }}</p>
+                    {% if current_user.last_login %}
+                    <p class="mb-3"><strong>Последний вход:</strong> {{ current_user.last_login.strftime('%d.%m.%Y %H:%M') }}</p>
+                    {% endif %}
+                </div>
+
+                {% if client %}
+                <div class="mb-5">
+                    <h5 class="mb-3">Контактная информация</h5>
+                    <p class="mb-3"><strong>Фамилия:</strong> {{ client.last_name }}</p>
+                    <p class="mb-3"><strong>Имя:</strong> {{ client.first_name }}</p>
+                    {% if client.middle_name %}
+                    <p class="mb-3"><strong>Отчество:</strong> {{ client.middle_name }}</p>
+                    {% endif %}
+                    <p class="mb-3"><strong>Телефон:</strong> {{ client.phone_number }}</p>
+                    {% if client.birth_date %}
+                    <p class="mb-3"><strong>Дата рождения:</strong> {{ client.birth_date.strftime('%d.%m.%Y') }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="mb-5">
+                    <h5 class="mb-3">Статистика</h5>
+                    <p class="mb-3"><strong>Количество заказов:</strong> {{ client.orders_count }}</p>
+                    <p class="mb-3"><strong>Общая сумма покупок:</strong> {{ "%.2f"|format(client.total_spent) }} ₽</p>
+                    <p class="mb-3"><strong>Статус клиента:</strong> 
+                        {% if client.is_regular %}
+                            <span class="badge bg-success">Постоянный клиент</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Обычный клиент</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% if client.orders %}
+                <div class="mb-5">
+                    <h5 class="mb-3">Последние заказы</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Статус</th>
+                                    <th>Сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in client.orders|sort(attribute='order_date', reverse=true)|slice(3) %}
+                                <tr>
+                                    <td>{{ order.order_date.strftime('%d.%m.%Y') }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if order.status.name == 'Выполнен' else 'warning' }}">
+                                            {{ order.status.name }}
+                                        </span>
+                                    </td>
+                                    <td>{{ "%.2f"|format(order.final_price) }} ₽</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Редактирование украшения</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="glass-form">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="form-label">Текущее изображение</label>
+                    <div class="current-image-container mb-3">
+                        <img src="{{ url_for('static', filename=jewelry.image_path) }}" 
+                             alt="{{ jewelry.name }}" 
+                             class="img-fluid rounded"
+                             style="max-height: 200px; object-fit: cover;">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Название</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ jewelry.name }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="description" class="form-label">Описание</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ jewelry.description }}</textarea>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="material" class="form-label">Материал</label>
+                    <select class="form-select" id="material" name="material" required>
+                        {% for material in materials %}
+                        <option value="{{ material.name }}" {% if material.name == jewelry.material %}selected{% endif %}>
+                            {{ material.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="category" class="form-label">Категория</label>
+                    <input type="text" class="form-control" id="category" name="category" value="{{ jewelry.category }}" required>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="price" class="form-label">Цена (₽)</label>
+                    <input type="number" class="form-control" id="price" name="price" value="{{ jewelry.price }}" step="0.01" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="weight" class="form-label">Вес (г)</label>
+                    <input type="number" class="form-control" id="weight" name="weight" value="{{ jewelry.weight }}" step="0.01" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="stone_type" class="form-label">Тип камня</label>
+                    <input type="text" class="form-control" id="stone_type" name="stone_type" value="{{ jewelry.stone_type }}">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="stone_carat" class="form-label">Вес камня (карат)</label>
+                    <input type="number" class="form-control" id="stone_carat" name="stone_carat" value="{{ jewelry.stone_carat }}" step="0.01">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="image" class="form-label">Новое изображение (оставьте пустым, чтобы сохранить текущее)</label>
+                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="available" name="available" {% if jewelry.available %}checked{% endif %}>
+                    <label class="form-check-label" for="available">Доступно для заказа</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{{ url_for('admin_jewelry') }}" class="btn btn-secondary">Назад</a>
+            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

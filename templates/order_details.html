@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card glass">
+                    <div class="card-body">
+                        <h2 class="card-title mb-4">Детали заказа #{{ order.id }}</h2>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Информация о заказе</h5>
+                                <p><strong>Дата заказа:</strong> {{ order.order_date.strftime('%d.%m.%Y %H:%M') }}</p>
+                                <p><strong>Статус:</strong> 
+                                    <span class="badge {% if order.status.name == 'Завершён' %}bg-success{% elif order.status.name == 'Отменён' %}bg-danger{% else %}bg-warning{% endif %}">
+                                        {{ order.status.name }}
+                                    </span>
+                                </p>
+                                <p><strong>Сумма:</strong> {{ order.final_price }} ₽</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Информация о доставке</h5>
+                                <p><strong>Адрес доставки:</strong> {{ order.delivery_address }}</p>
+                                <p><strong>Размер:</strong> {{ order.size }}</p>
+                                {% if order.additional_notes %}
+                                <p><strong>Дополнительные пожелания:</strong> {{ order.additional_notes }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h5>Информация об изделии</h5>
+                                <div class="d-flex align-items-center">
+                                    <img src="{{ url_for('static', filename=order.jewelry.image_path) }}" 
+                                         alt="{{ order.jewelry.name }}" 
+                                         class="me-3" 
+                                         style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div>
+                                        <h6>{{ order.jewelry.name }}</h6>
+                                        <p class="mb-0">{{ order.jewelry.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="{{ url_for('orders') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-left me-2"></i>Назад к заказам
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.glass {
+    background: rgba(33, 37, 41, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card img {
+    border-radius: 8px;
+}
+</style>
+{% endblock %} 

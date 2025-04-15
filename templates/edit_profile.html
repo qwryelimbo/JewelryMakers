@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="glass-card p-4 mb-4">
+                <h3 class="mb-4">Текущий аватар</h3>
+                <img src="{{ url_for('static', filename=current_user.avatar) }}" 
+                     class="rounded mb-4" 
+                     alt="Текущий аватар" 
+                     style="width: 100%; max-width: 300px; height: auto;">
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="glass-card p-4 mb-4">
+                <h3 class="mb-4">Редактирование профиля</h3>
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <label for="username" class="form-label">Логин</label>
+                                <input type="text" class="form-control glass-input" id="username" name="username" value="{{ current_user.username }}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control glass-input" id="email" name="email" value="{{ current_user.email }}" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="mb-4">
+                                <label for="last_name" class="form-label">Фамилия</label>
+                                <input type="text" class="form-control glass-input" id="last_name" name="last_name" value="{{ client.last_name if client else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-4">
+                                <label for="first_name" class="form-label">Имя</label>
+                                <input type="text" class="form-control glass-input" id="first_name" name="first_name" value="{{ client.first_name if client else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-4">
+                                <label for="middle_name" class="form-label">Отчество</label>
+                                <input type="text" class="form-control glass-input" id="middle_name" name="middle_name" value="{{ client.middle_name if client else '' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="phone_number" class="form-label">Телефон</label>
+                                <input type="tel" class="form-control glass-input" id="phone_number" name="phone_number" value="{{ client.phone_number if client else '' }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="birth_date" class="form-label">Дата рождения</label>
+                                <input type="date" class="form-control glass-input" id="birth_date" name="birth_date" value="{{ client.birth_date.strftime('%Y-%m-%d') if client and client.birth_date else '' }}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="avatar" class="form-label">Новый аватар</label>
+                        <input type="file" class="form-control glass-input" id="avatar" name="avatar" accept="image/*">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg me-3">Сохранить изменения</button>
+                    <a href="{{ url_for('profile') }}" class="btn btn-secondary btn-lg">Отмена</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-edit-form {
+    min-height: 1200px;
+}
+.glass-input {
+    padding: 12px;
+    font-size: 1.1rem;
+    height: 50px;
+}
+.form-label {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+.card-body {
+    padding: 4rem;
+}
+.card {
+    min-height: 1400px;
+}
+</style>
+{% endblock %} 

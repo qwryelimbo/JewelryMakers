@@ -3,128 +3,105 @@
 {% block content %}
 <div class="section-padding">
     <div class="container">
-        <!-- Header -->
-        <div class="row mb-5">
-            <div class="col-lg-8">
-                <h1 class="hero-title mb-2">Admin <span class="hero-accent">Dashboard</span></h1>
-                <p class="hero-subtitle">Управление коллекцией VHS и контроль инвентаря.</p>
-            </div>
-            <div class="col-lg-4 d-flex align-items-center justify-content-lg-end mt-3 mt-lg-0">
-                <a href="{{ url_for('export_cassettes') }}" class="btn btn-secondary btn-lg me-2">
-                    <span class="me-2">📥</span> Экспорт
-                </a>
-                <a href="{{ url_for('add_cassette') }}" class="btn btn-primary btn-lg">
-                    <span class="me-2">+</span> Добавить кассету
-                </a>
-            </div>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="row g-4 mb-5">
+        <h1 class="mb-4">Панель администратора</h1>
+        
+        <div class="row mb-4">
             <div class="col-md-3">
-                <div class="glass p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stats-icon me-3">📼</div>
-                        <div>
-                            <div class="stats-value">{{ cassettes|length }}</div>
-                            <div class="stats-label">Всего кассет</div>
-                        </div>
+                <div class="card glass">
+                    <div class="card-body">
+                        <h5 class="card-title">Украшения</h5>
+                        <p class="card-text">{{ jewelry_items|length }} изделий</p>
+                        <a href="{{ url_for('admin_jewelry') }}" class="btn btn-primary">Управление</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stats-icon me-3">✓</div>
-                        <div>
-                            <div class="stats-value">{{ cassettes|selectattr('available')|list|length }}</div>
-                            <div class="stats-label">В наличии</div>
-                        </div>
+                <div class="card glass">
+                    <div class="card-body">
+                        <h5 class="card-title">Материалы</h5>
+                        <p class="card-text">{{ materials|length }} материалов</p>
+                        <a href="{{ url_for('admin_materials') }}" class="btn btn-primary">Управление</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stats-icon me-3">🎬</div>
-                        <div>
-                            <div class="stats-value">{{ cassettes|rejectattr('available')|list|length }}</div>
-                            <div class="stats-label">Забронировано</div>
-                        </div>
+                <div class="card glass">
+                    <div class="card-body">
+                        <h5 class="card-title">Заказы</h5>
+                        <p class="card-text">{{ orders|length }} заказов</p>
+                        <a href="{{ url_for('admin_orders') }}" class="btn btn-primary">Управление</a>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="glass p-4">
-                    <div class="d-flex align-items-center">
-                        <div class="stats-icon me-3">💰</div>
-                        <div>
-                            <div class="stats-value">{{ "%.2f"|format(cassettes|sum(attribute='price')) }} $</div>
-                            <div class="stats-label">Итого</div>
-                        </div>
+                <div class="card glass">
+                    <div class="card-body">
+                        <h5 class="card-title">Клиенты</h5>
+                        <p class="card-text">{{ clients|length }} клиентов</p>
+                        <a href="#" class="btn btn-primary">Управление</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Cassettes Table -->
-        <div class="cassettes-list mt-4">
-            <div class="list-header d-flex justify-content-between align-items-center mb-3">
-                <input type="text" class="search-bar glass-input" placeholder="Поиск кассет...">
-            </div>
-            
-            <div class="list-container">
-                {% for cassette in cassettes %}
-                <div class="list-item glass">
-                    <div class="list-item-content">
-                        <img src="{{ url_for('static', filename=cassette.image_path) }}" 
-                             alt="{{ cassette.title }}" 
-                             class="admin-thumbnail">
-                        <div class="list-item-info">
-                            <h5 class="list-item-title">{{ cassette.title }}</h5>
-                            <div class="list-item-meta">{{ cassette.genre }} • {{ cassette.release_year }} • {{ "%.2f"|format(cassette.price) }} $</div>
-                            <div class="list-item-description">
-                                {% if cassette.description %}
-                                    {{ cassette.description[:100] }}{% if cassette.description|length > 100 %}...{% endif %}
-                                {% else %}
-                                    Описание отсутствует
-                                {% endif %}
-                            </div>
-                        </div>
-                        <div class="list-item-status">
-                            {% if cassette.available %}
-                                <span class="badge badge-available">В наличии</span>
-                            {% else %}
-                                <span class="badge badge-unavailable">Арендована</span>
-                            {% endif %}
-                        </div>
-                        <div class="list-item-actions">
-                            <a href="{{ url_for('edit_cassette', id=cassette.id) }}" class="btn btn-outline btn-sm">Изменить</a>
-                            <a href="{{ url_for('delete_cassette', id=cassette.id) }}" 
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Вы уверены, что хотите удалить эту кассету?')">Удалить</a>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card glass">
+                    <div class="card-body">
+                        <h5 class="card-title">Последние заказы</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Клиент</th>
+                                        <th>Статус</th>
+                                        <th>Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders[:5] %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.client.first_name }} {{ order.client.last_name }}</td>
+                                        <td>{{ order.status }}</td>
+                                        <td>{{ order.final_price }} ₽</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
+            </div>
+            <div class="col-md-6">
+                <div class="card glass">
+                    <div class="card-body">
+                        <h5 class="card-title">Последние добавленные украшения</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Тип</th>
+                                        <th>Цена</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in jewelry_items[:5] %}
+                                    <tr>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.type }}</td>
+                                        <td>{{ item.price }} ₽</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-document.querySelector('.search-bar').addEventListener('input', function(e) {
-    const searchText = e.target.value.toLowerCase();
-    document.querySelectorAll('.list-item').forEach(item => {
-        const title = item.querySelector('.list-item-title').textContent.toLowerCase();
-        const meta = item.querySelector('.list-item-meta').textContent.toLowerCase();
-        const description = item.querySelector('.list-item-description').textContent.toLowerCase();
-        if (title.includes(searchText) || meta.includes(searchText) || description.includes(searchText)) {
-            item.style.display = '';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-});
-</script>
 {% endblock %} 

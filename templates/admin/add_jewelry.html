@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="glass p-4">
+                    <h1 class="hero-title mb-4">Add New <span class="hero-accent">Jewelry</span></h1>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control glass-input" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control glass-input" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="material" class="form-label">Material</label>
+                                    <select class="form-select glass-input" id="material" name="material" required>
+                                        <option value="">Select Material</option>
+                                        <option value="Gold">Gold</option>
+                                        <option value="Silver">Silver</option>
+                                        <option value="Platinum">Platinum</option>
+                                        <option value="Rose Gold">Rose Gold</option>
+                                        <option value="White Gold">White Gold</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="category" class="form-label">Category</label>
+                                    <select class="form-select glass-input" id="category" name="category" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Rings">Rings</option>
+                                        <option value="Necklaces">Necklaces</option>
+                                        <option value="Earrings">Earrings</option>
+                                        <option value="Bracelets">Bracelets</option>
+                                        <option value="Pendants">Pendants</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">Price ($)</label>
+                                    <input type="number" step="0.01" class="form-control glass-input" id="price" name="price" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="weight" class="form-label">Weight (g)</label>
+                                    <input type="number" step="0.1" class="form-control glass-input" id="weight" name="weight" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="stone_type" class="form-label">Stone Type</label>
+                                    <select class="form-select glass-input" id="stone_type" name="stone_type">
+                                        <option value="">No Stone</option>
+                                        <option value="Diamond">Diamond</option>
+                                        <option value="Ruby">Ruby</option>
+                                        <option value="Sapphire">Sapphire</option>
+                                        <option value="Emerald">Emerald</option>
+                                        <option value="Pearl">Pearl</option>
+                                        <option value="Amethyst">Amethyst</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="stone_carat" class="form-label">Stone Carat</label>
+                                    <input type="number" step="0.01" class="form-control glass-input" id="stone_carat" name="stone_carat">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-control glass-input" id="image" name="image" accept="image/*">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary flex-grow-1">Add Item</button>
+                            <a href="{{ url_for('admin') }}" class="btn btn-outline">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

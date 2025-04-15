@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card glass-effect">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-5 display-4">Индивидуальный заказ</h2>
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-5">
+                                    <label for="name" class="form-label fs-4">Название изделия</label>
+                                    <input type="text" class="form-control form-control-lg py-3" id="name" name="name" required>
+                                </div>
+
+                                <div class="mb-5">
+                                    <label for="type" class="form-label fs-4">Тип изделия</label>
+                                    <select class="form-select form-select-lg py-3" id="type" name="type" required>
+                                        <option value="кольцо">Кольцо</option>
+                                        <option value="серьги">Серьги</option>
+                                        <option value="подвеска">Подвеска</option>
+                                        <option value="браслет">Браслет</option>
+                                        <option value="колье">Колье</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-5">
+                                    <label for="size" class="form-label fs-4">Размер</label>
+                                    <input type="text" class="form-control form-control-lg py-3" id="size" name="size" placeholder="Например: 16.5 для кольца">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="mb-5">
+                                    <label for="delivery_address" class="form-label fs-4">Адрес доставки</label>
+                                    <textarea class="form-control form-control-lg py-3" id="delivery_address" name="delivery_address" rows="4" required></textarea>
+                                </div>
+
+                                <div class="mb-5">
+                                    <label for="additional_notes" class="form-label fs-4">Дополнительные пожелания</label>
+                                    <textarea class="form-control form-control-lg py-3" id="additional_notes" name="additional_notes" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label class="form-label fs-4">Материалы</label>
+                            <div class="row">
+                                {% for material in materials %}
+                                <div class="col-md-4 mb-4">
+                                    <div class="card glass-effect h-100">
+                                        <div class="card-body p-4">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="materials" value="{{ material.id }}" id="material{{ material.id }}">
+                                                <label class="form-check-label fs-5" for="material{{ material.id }}">
+                                                    {{ material.name }}
+                                                </label>
+                                            </div>
+                                            <input type="number" class="form-control form-control-lg py-3" name="material_weight_{{ material.id }}" 
+                                                   placeholder="Вес в граммах" step="0.1" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fs-4">Отправить заказ</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

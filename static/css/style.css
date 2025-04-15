@@ -1,4 +1,9 @@
 :root {
+    --gold: #D4AF37;
+    --gold-light: #FFD700;
+    --gold-dark: #B8860B;
+    --bg-dark: #1a1a1a;
+    --text-light: #ffffff;
     --bg-color: #0a0a0a;
     --text-color: rgba(255, 255, 255, 0.95);
     --text-muted: rgba(255, 255, 255, 0.6);
@@ -10,8 +15,8 @@
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background: var(--bg-dark);
+    color: var(--text-light);
     min-height: 100vh;
     font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
@@ -20,19 +25,21 @@ body {
 
 /* Navigation */
 .navbar {
-    background: transparent !important;
+    background: rgba(26, 26, 26, 0.95);
+    border-bottom: 2px solid var(--gold);
+    box-shadow: 0 2px 10px rgba(212, 175, 55, 0.2);
     padding: 1.5rem 0;
-    border: none;
 }
 
 .navbar-brand {
+    color: var(--gold-light) !important;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
     font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--text-color) !important;
 }
 
 .nav-link {
-    color: var(--text-muted) !important;
+    color: var(--text-light) !important;
     text-decoration: none;
     position: relative;
     padding: 0.5rem 0;
@@ -52,17 +59,46 @@ body {
 }
 
 .nav-link:hover {
-    color: var(--text-color) !important;
+    color: var(--gold-light) !important;
 }
 
 .nav-link:hover:after {
     width: 100%;
 }
 
+.navbar-toggler {
+    border-color: var(--gold) !important;
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(212, 175, 55, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.dropdown-menu {
+    background: rgba(26, 26, 26, 0.95);
+    border: 1px solid var(--gold);
+}
+
+.dropdown-item {
+    color: var(--text-light) !important;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(212, 175, 55, 0.1);
+    color: var(--gold-light) !important;
+}
+
+.dropdown-divider {
+    border-color: var(--gold);
+    opacity: 0.3;
+}
+
 /* Glassmorphism */
 .glass {
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     position: relative;
@@ -341,47 +377,33 @@ body {
 /* Tables */
 .table {
     color: var(--text-color);
-    border-collapse: separate;
-    border-spacing: 0 0.5rem;
-    margin: 0;
+    margin-bottom: 0;
 }
 
 .table thead th {
-    background: transparent;
-    border: none;
-    color: var(--text-muted);
-    font-weight: 500;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 1px;
+    border-bottom: 2px solid var(--gold-color);
+    color: var(--gold-color);
+    font-weight: 600;
     padding: 1rem;
 }
 
-.table tbody tr {
-    background: rgba(16, 16, 16, 0.95) !important;
-    transition: transform 0.3s ease;
+.table tbody td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
 }
 
 .table tbody tr:hover {
-    background: rgba(20, 20, 20, 0.95) !important;
-    transform: translateY(-2px);
+    background-color: rgba(255, 215, 0, 0.05);
 }
 
-.table tbody td {
-    border: none;
-    padding: 1.25rem 1.5rem;
-    vertical-align: middle;
-    color: var(--text-color);
+.table .btn-group {
+    gap: 0.5rem;
 }
 
-.table tbody td:first-child {
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
-}
-
-.table tbody td:last-child {
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+.table .btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
 }
 
 /* Links */
@@ -1334,4 +1356,38 @@ h1, h2, h3, h4, h5, h6 {
 .stats-label {
     font-size: 0.875rem;
     color: var(--text-muted);
+}
+
+.glass-dropdown {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 10px 0;
+    margin-top: 10px;
+}
+
+.glass-dropdown .dropdown-item {
+    color: #fff;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+}
+
+.glass-dropdown .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.glass-dropdown .dropdown-divider {
+    border-color: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+.navbar-nav .dropdown-menu {
+    min-width: 200px;
+}
+
+.navbar-nav .dropdown-item i {
+    width: 20px;
+    text-align: center;
 } 

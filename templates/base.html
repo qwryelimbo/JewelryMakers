@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RandomPlay - VHS Collection</title>
+    <title>JewelryMakers - Ювелирная мастерская</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand text-link" href="{{ url_for('index') }}">RandomPlay</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-gem me-2"></i>JewelryMakers
+            </a>
+            <div class="d-flex align-items-center">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Главная</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('catalog') }}">Каталог</a>
                     </li>
@@ -24,15 +26,53 @@
                         <a class="nav-link" href="{{ url_for('about') }}">О нас</a>
                     </li>
                 </ul>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
-                        {% if current_user.is_admin %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin') }}">Панель администратора</a>
-                            </li>
+                        {% if current_user.role in ['admin', 'master'] %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-crown me-1"></i>Админ-панель
+                            </a>
+                            <ul class="dropdown-menu glass-dropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('admin_jewelry') }}">
+                                    <i class="fas fa-gem me-2"></i>Украшения
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_orders') }}">
+                                    <i class="fas fa-shopping-cart me-2"></i>Заказы
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_materials') }}">
+                                    <i class="fas fa-cubes me-2"></i>Материалы
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_clients') }}">
+                                    <i class="fas fa-users me-2"></i>Клиенты
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('admin_users') }}">
+                                    <i class="fas fa-people me-2"></i>Пользователи
+                                </a></li>
+                            </ul>
+                        </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>{{ current_user.username }}
+                            </a>
+                            <ul class="dropdown-menu glass-dropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('profile') }}">
+                                    <i class="fas fa-user-circle me-2"></i>Профиль
+                                </a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('orders') }}">
+                                    <i class="fas fa-shopping-bag me-2"></i>Мои заказы
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Выйти
+                                </a></li>
+                            </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">

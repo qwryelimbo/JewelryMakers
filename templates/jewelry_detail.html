@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card glass-card">
+                <img src="{{ url_for('static', filename=item.image_path) }}" class="card-img-top" alt="{{ item.name }}">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card glass-card">
+                <div class="card-body">
+                    <h2 class="card-title">{{ item.name }}</h2>
+                    <p class="card-text">{{ item.description }}</p>
+                    <div class="mb-3">
+                        <h5>Материал:</h5>
+                        <p>{{ item.material.name }} ({{ item.material.description }})</p>
+                        <p>Цена за грамм: {{ "%.2f"|format(item.material.current_price_per_gram) }} руб.</p>
+                    </div>
+                    <div class="mb-3">
+                        <h5>Характеристики:</h5>
+                        <p>Категория: {{ item.category }}</p>
+                        <p>Вес: {{ "%.1f"|format(item.weight) }} г</p>
+                        {% if item.stone_type %}
+                        <p>Камень: {{ item.stone_type }}</p>
+                        <p>Вес камня: {{ "%.1f"|format(item.stone_carat) }} карат</p>
+                        {% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <h5>Цена:</h5>
+                        <p class="h4">{{ "%.2f"|format(item.price) }} руб.</p>
+                    </div>
+                    {% if current_user.is_authenticated %}
+                    <form action="{{ url_for('add_to_cart', id=item.id) }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                    </form>
+                    {% else %}
+                    <p class="text-muted">Для покупки необходимо <a href="{{ url_for('login') }}">войти</a> в систему</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

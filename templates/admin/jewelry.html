@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">Управление украшениями</h1>
+        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#addJewelryModal">
+            <i class="bi bi-plus-lg me-2"></i>Добавить украшение
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Изображение</th>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Материал</th>
+                    <th>Цена</th>
+                    <th>Вес</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in jewelry %}
+                <tr class="jewelry-row">
+                    <td>#{{ item.id }}</td>
+                    <td>
+                        <img src="{{ url_for('static', filename=item.image_path) }}" 
+                             alt="{{ item.name }}" 
+                             class="rounded" 
+                             style="width: 64px; height: 64px; object-fit: cover;">
+                    </td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.category }}</td>
+                    <td>{{ item.material.name }}</td>
+                    <td>{{ "%.2f"|format(item.price) }} ₽</td>
+                    <td>{{ "%.1f"|format(item.weight) }} г</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-light" data-bs-toggle="modal" 
+                                    data-bs-target="#viewJewelryModal{{ item.id }}">
+                                <i class="bi bi-eye me-1"></i>Просмотр
+                            </button>
+                            <button class="btn btn-outline-light" data-bs-toggle="modal"
+                                    data-bs-target="#editJewelryModal{{ item.id }}">
+                                <i class="bi bi-pencil me-1"></i>Редакт.
+                            </button>
+                            <form action="{{ url_for('admin_jewelry_delete', id=item.id) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-outline-light" onclick="return confirm('Вы уверены, что хотите удалить это украшение?')">
+                                    <i class="bi bi-trash me-1"></i>Удалить
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Модальное окно добавления украшения -->
+<div class="modal fade" id="addJewelryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content glass-card">
+            <div class="modal-body">
+                <form id="addJewelryForm" action="{{ url_for('admin_jewelry_add') }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea class="form-control" name="description" rows="3" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Категория</label>
+                            <select class="form-select" name="category" required>
+                                <option value="rings">Кольца</option>
+                                <option value="earrings">Серьги</option>
+                                <option value="necklaces">Кулоны</option>
+                                <option value="bracelets">Браслеты</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Материал</label>
+                            <select class="form-select" name="material_id" required>
+                                {% for material in materials %}
+                                <option value="{{ material.id }}">{{ material.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Цена (₽)</label>
+                            <input type="number" class="form-control" name="price" step="0.01" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Вес (г)</label>
+                            <input type="number" class="form-control" name="weight" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Изображение</label>
+                        <input type="file" class="form-control" name="image" accept="image/*" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-outline-light" onclick="submitJewelryForm()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальные окна для каждого украшения -->
+{% for item in jewelry %}
+<!-- Модальное окно просмотра -->
+<div class="modal fade" id="viewJewelryModal{{ item.id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ item.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="{{ url_for('static', filename=item.image_path) }}" 
+                             alt="{{ item.name }}" 
+                             class="img-fluid rounded">
+                    </div>
+                    <div class="col-md-8">
+                        <h4>Описание</h4>
+                        <p>{{ item.description }}</p>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <p><strong>Категория:</strong> {{ item.category }}</p>
+                                <p><strong>Материал:</strong> {{ item.material.name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Цена:</strong> {{ "%.2f"|format(item.price) }} ₽</p>
+                                <p><strong>Вес:</strong> {{ "%.1f"|format(item.weight) }} г</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно редактирования -->
+<div class="modal fade" id="editJewelryModal{{ item.id }}" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content glass-card">
+            <div class="modal-body">
+                <form action="{{ url_for('admin_jewelry_edit', id=item.id) }}" method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Название</label>
+                        <input type="text" class="form-control" name="name" value="{{ item.name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Описание</label>
+                        <textarea class="form-control" name="description" rows="3" required>{{ item.description }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Категория</label>
+                            <select class="form-select" name="category" required>
+                                <option value="rings" {% if item.category == 'rings' %}selected{% endif %}>Кольца</option>
+                                <option value="earrings" {% if item.category == 'earrings' %}selected{% endif %}>Серьги</option>
+                                <option value="necklaces" {% if item.category == 'necklaces' %}selected{% endif %}>Кулоны</option>
+                                <option value="bracelets" {% if item.category == 'bracelets' %}selected{% endif %}>Браслеты</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Материал</label>
+                            <select class="form-select" name="material_id" required>
+                                {% for material in materials %}
+                                <option value="{{ material.id }}" {% if item.material_id == material.id %}selected{% endif %}>
+                                    {{ material.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Цена (₽)</label>
+                            <input type="number" class="form-control" name="price" step="0.01" value="{{ item.price }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Вес (г)</label>
+                            <input type="number" class="form-control" name="weight" step="0.1" value="{{ item.weight }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Новое изображение (оставьте пустым, чтобы сохранить текущее)</label>
+                        <input type="file" class="form-control" name="image" accept="image/*">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-outline-light">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<style>
+.table {
+    background: rgba(26, 26, 26, 0.95);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table>:not(caption)>*>* {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-light);
+    border-bottom-color: rgba(212, 175, 55, 0.1);
+}
+
+.table thead th {
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold-light);
+    border-bottom: 2px solid var(--gold);
+    font-weight: 600;
+}
+
+.btn-outline-light {
+    border-color: var(--gold);
+    color: var(--gold-light);
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.btn-outline-light:hover {
+    background-color: var(--gold);
+    color: var(--bg-dark);
+    border-color: var(--gold);
+    transform: translateY(-1px);
+}
+
+.jewelry-row {
+    transition: all 0.3s ease;
+}
+
+.jewelry-row:hover {
+    background: rgba(212, 175, 55, 0.05) !important;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.modal-content {
+    background: rgba(26, 26, 26, 0.95);
+    border: 1px solid var(--gold);
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.form-control, .form-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    color: var(--text-light);
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--gold);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+</style>
+
+<script>
+function editJewelry(id) {
+    // Здесь будет логика редактирования украшения
+    console.log('Editing jewelry:', id);
+}
+
+function deleteJewelry(id) {
+    if (confirm('Вы уверены, что хотите удалить это украшение?')) {
+        // Здесь будет логика удаления украшения
+        console.log('Deleting jewelry:', id);
+    }
+}
+
+function submitJewelryForm() {
+    const form = document.getElementById('addJewelryForm');
+    const formData = new FormData(form);
+    
+    // Здесь будет логика отправки формы
+    console.log('Submitting form:', Object.fromEntries(formData));
+}
+</script>
+{% endblock %} 

@@ -1,101 +1,124 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="hero min-vh-100">
-    <!-- Light spots -->
-    <div class="light-spot light-spot-1"></div>
-    <div class="light-spot light-spot-2"></div>
-    <div class="light-spot light-spot-3"></div>
-
+<div class="hero-section">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="hero-content fade-in">
-                    <h1 class="hero-title">
-                        <span class="hero-accent">REWIND</span><br>
-                        THE <span class="hero-accent">MAGIC</span><br>
-                        OF ANALOG<br>
-                    </h1>
-                    <p class="hero-subtitle">
-                        Погрузитесь в мир винтажных видеокассет. Каждая кассета в нашей коллекции - это бережно сохраненная частичка истории, готовая перенести вас в золотую эпоху аналогового развлечения.
-                    </p>
-                    <a href="{{ url_for('catalog') }}" class="hero-link">
-                        Смотреть коллекцию <span>→</span>
-                    </a>
+        <div class="row align-items-center min-vh-100">
+            <div class="col-12 text-center">
+                <div class="hero-content">
+                    <h1 class="slide-up">Ювелирная мастерская</h1>
+                    <h2 class="slide-up delay-1">JewelryMakers</h2>
+                    <div class="logo-container">
+                        <img src="{{ url_for('static', filename='logo.png') }}" alt="JewelryMakers Logo" class="logo-slide-up">
+                    </div>
+                    <p class="slide-up delay-2">Создаем уникальные украшения с душой и любовью к деталям</p>
+                    <div class="hero-buttons slide-up delay-3">
+                        <a href="{{ url_for('catalog') }}" class="btn btn-primary">Каталог</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Hero image -->
-    <img src="{{ url_for('static', filename='logo.png') }}" 
-         alt="RandomPlay Logo" 
-         class="hero-image fade-in">
-</section>
+<style>
+.hero-section {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(0, 0, 0, 0.8) 100%);
+    min-height: 100vh;
+}
 
-<div class="section-padding pt-0">
+.hero-content {
+    color: var(--text-light);
+    text-align: center;
+}
+
+.hero-content h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--gold-light);
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUp 1s ease forwards;
+}
+
+.hero-content h2 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUp 1s ease forwards 0.5s;
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin: 2rem 0;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUp 1s ease forwards 1s;
+}
+
+.hero-buttons {
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUp 1s ease forwards 1.5s;
+}
+
+.logo-container {
+    position: relative;
+    margin: 2rem 0;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: slideUp 1s ease forwards 0.75s;
+}
+
+.logo-slide-up {
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.delay-1 {
+    animation-delay: 0.5s;
+}
+
+.delay-2 {
+    animation-delay: 1s;
+}
+
+.delay-3 {
+    animation-delay: 1.5s;
+}
+
+.btn-outline-light {
+    border-color: var(--gold);
+    color: var(--gold-light);
+}
+
+.btn-outline-light:hover {
+    background-color: var(--gold);
+    color: var(--bg-dark);
+    border-color: var(--gold);
+}
+</style>
+
+<div class="section-padding pt-5 pb-5">
     <div class="container">
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="text-center mb-4">Random Picks</h2>
-                <div class="row random-picks">
-                    {% for cassette in random_cassettes[:3] %}
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-img-wrapper">
-                                <img src="{{ url_for('static', filename=cassette.image_path) }}" 
-                                     class="card-img-top" 
-                                     alt="{{ cassette.title }}">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{ cassette.title }}</h5>
-                                <div class="card-meta">
-                                    <span>{{ cassette.genre }}</span>
-                                    <span>{{ cassette.release_year }}</span>
-                                </div>
-                                <div class="d-flex align-items-center mt-2">
-                                    <div class="card-price">${{ "%.2f"|format(cassette.price) }}</div>
-                                    <a href="{{ url_for('product_details', id=cassette.id) }}" class="btn-details">Подробно</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <div class="row mb-5">
-            <div class="col-md-4">
-                <div class="card glass">
-                    <div class="card-body text-center">
-                        <h3>Винтажная коллекция</h3>
-                        <p class="text-muted">Исследуйте нашу обширную коллекцию классических VHS-кассет 80-х и 90-х годов.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card glass">
-                    <div class="card-body text-center">
-                        <h3>Редкие находки</h3>
-                        <p class="text-muted">Откройте для себя редкие и снятые с производства фильмы, которые сложно найти где-либо еще.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card glass">
-                    <div class="card-body text-center">
-                        <h3>Новые поступления</h3>
-                        <p class="text-muted">Ознакомьтесь с последними пополнениями нашей коллекции.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="row">
             <div class="col-md-6 mx-auto text-center">
-                <h2 class="h3 mb-3">О RandomPlay</h2>
-                <p class="text-muted">RandomPlay - это ваше место для аутентичных VHS-кассет. Мы верим в сохранение ностальгии физических носителей и делимся радостью классического кино с новым поколением.</p>
+                <h2 class="h3 mb-3">О нас</h2>
+                <p class="text-muted">Мы верим в создание украшений, которые будут передаваться из поколения в поколение. Каждое изделие создается с любовью и вниманием к деталям.</p>
                 <a href="{{ url_for('about') }}" class="link-accent">Узнать больше →</a>
             </div>
         </div>

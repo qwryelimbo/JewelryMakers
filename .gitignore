@@ -24,7 +24,6 @@ wheels/
 venv/
 ENV/
 env/
-.venv/
 
 # IDE
 .idea/
@@ -34,15 +33,13 @@ env/
 
 # Database
 *.db
-instance/*.db
+*.sqlite3
+instance/
+db(other)/backups/
 
 # Logs
 *.log
 
-# Local development
+# Environment variables
 .env
-.env.local
-
-# Test files
-.pytest_cache/
-tests/screenshots/ 
+.env.local 
